@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Just for Fun</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fef6f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .question {
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+    }
+
+    .input-area {
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #ff87ab;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f76c97;
+    }
+
+    .final-message {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="quiz">
+      <div class="question" id="question">
+        Hey you! 💫 Before we start, just know this is all for fun. Let’s play a little game!<br><br>What’s your name?
+      </div>
+      <div class="input-area">
+        <input type="text" id="answerInput" placeholder="Type here..." />
+      </div>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+    <div id="final" class="final-message"></div>
+  </div>
+
+  <script>
+    const questions = [
+      "What’s your name?",
+      "When is your birthday?",
+      "What's one thing you desperately want someone to gift you?",
+      "Who is your favorite person?",
+      "If you had to choose a birthday dress, what would it be?",
+      "What flavor screams 'you' — Vanilla, Chocolate, Strawberry, or Coffee?",
+      "What makes you feel truly seen?",
+      "Do you feel you are beautiful?",
+      "What's your favorite color?",
+      "What's your favorite flower?",
+      "What kind of cake do you love?",
+      "Do you prefer soft or dark aesthetic?",
+      "What's your dream birthday moment?",
+      "Ocean or Sky?",
+      "What kind of vibe do you want for your birthday party?",
+      "Do you like balloons, fairy lights, or candles more?",
+      "What’s one song you’d want at your birthday?",
+      "Do you like handwritten letters or voice messages?",
+      "What dessert makes you smile instantly?",
+      "Pick a word: calm, wild, cozy, royal, cute?"
+    ];
+
+    const answers = [];
+    let current = 0;
+
+    function nextQuestion() {
+      const input = document.getElementById('answerInput');
+      if (input.value.trim() === '') return;
+
+      answers.push(input.value.trim());
+      input.value = '';
+
+      current++;
+      if (current < questions.length) {
+        document.getElementById('question').innerText = questions[current];
+      } else {
+        sendAnswersToGoogleSheet();
+        showFinalMessage();
+      }
+    }
+
+    function sendAnswersToGoogleSheet() {
+      fetch("https://script.google.com/macros/s/AKfycbxgtgzKSnDyNaWKrVwUXnjs3ZKXXUQaDCJ-Ti8XtRErdfWh3dg65V_p1dIhCiSFwvU/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: answers[0], // First answer = name
+          responses: answers
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("✅ Sent to Google Sheet:", data);
+      })
+      .catch(error => {
+        console.error("❌ Failed to send:", error);
+      });
+    }
+
+    function showFinalMessage() {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('final').style.display = 'block';
+
+      document.getElementById('final').innerHTML = `
+        <p>✨ Thank you for playing along and sharing all those lovely answers.</p>
+        <p>Whoever you are... just know you're <strong>so beautiful</strong> — not just outside, but in your thoughts, your smile, your softness.</p>
+        <p>You deserve a birthday that feels like a warm hug 💖</p>
+      `;
+    }
+  </script>
+</body>
+</html>
