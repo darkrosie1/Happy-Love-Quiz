@@ -15,7 +15,6 @@
       height: 100vh;
       margin: 0;
     }
-
     .container {
       background: #fff;
       padding: 2rem;
@@ -24,16 +23,13 @@
       max-width: 400px;
       text-align: center;
     }
-
     .question {
       margin-bottom: 1.5rem;
       font-size: 1.2rem;
     }
-
     .input-area {
       margin-bottom: 1.5rem;
     }
-
     input[type="text"] {
       width: 100%;
       padding: 0.7rem;
@@ -41,7 +37,6 @@
       border-radius: 10px;
       font-size: 1rem;
     }
-
     button {
       background-color: #ff87ab;
       color: white;
@@ -51,11 +46,9 @@
       font-size: 1rem;
       cursor: pointer;
     }
-
     button:hover {
       background-color: #f76c97;
     }
-
     .final-message {
       font-size: 1.2rem;
       line-height: 1.6;
@@ -83,28 +76,31 @@
     <div id="final" class="final-message"></div>
   </div>
 
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
   <script>
     const questions = [
       "What’s your name?",
       "When is your birthday?",
-      "What's one thing you desperately want someone to gift you?",
       "Who is your favorite person?",
-      "If you had to choose a birthday dress, what would it be?",
+      "Ocean or Sky?",
+      "Pick a word: calm, wild, cozy, royal, cute?",
+      "Do you like handwritten letters or voice messages?",
       "What flavor screams 'you' — Vanilla, Chocolate, Strawberry, or Coffee?",
       "What makes you feel truly seen?",
       "Do you feel you are beautiful?",
       "What's your favorite color?",
       "What's your favorite flower?",
-      "What kind of cake do you love?",
       "Do you prefer soft or dark aesthetic?",
-      "What's your dream birthday moment?",
-      "Ocean or Sky?",
-      "What kind of vibe do you want for your birthday party?",
-      "Do you like balloons, fairy lights, or candles more?",
-      "What’s one song you’d want at your birthday?",
-      "Do you like handwritten letters or voice messages?",
       "What dessert makes you smile instantly?",
-      "Pick a word: calm, wild, cozy, royal, cute?"
+      "What's your dream birthday moment?",
+      "What kind of cake do you love?",
+      "What kind of vibe do you want for your birthday party?",
+      "If you had to choose a birthday dress, what would it be?",
+      "What's one thing you desperately want someone to gift you?",
+      "Do you like balloons, fairy lights, or candles more?",
+      "What’s one song you’d want at your birthday?"
     ];
 
     const answers = [];
@@ -118,24 +114,40 @@
       input.value = '';
 
       current++;
+
       if (current < questions.length) {
         document.getElementById('question').innerText = questions[current];
       } else {
-        sendToFormspree();
+        // Quiz finished
+        celebrate();
         showFinalMessage();
+
+        // Delay sending form to let confetti run
+        setTimeout(() => {
+          sendToFormspree();
+        }, 2000);
       }
     }
 
     function sendToFormspree() {
-      const combinedAnswers = questions.map((q, i) => `${q}\n${answers[i]}`).join('\n\n');
+      const combinedAnswers = questions.map((q, i) => `${q}\n${answers[i] || ''}`).join('\n\n');
       document.getElementById('formMessage').value = combinedAnswers;
       document.getElementById('formspreeForm').submit();
     }
 
+    function celebrate() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
     function showFinalMessage() {
       document.getElementById('quiz').style.display = 'none';
-      document.getElementById('final').style.display = 'block';
-      document.getElementById('final').innerHTML = `
+      const finalDiv = document.getElementById('final');
+      finalDiv.style.display = 'block';
+      finalDiv.innerHTML = `
         <p>✨ Thank you for playing along and sharing all those lovely answers.</p>
         <p>Whoever you are... just know you're <strong>so beautiful</strong> — not just outside, but in your thoughts, your smile, your softness.</p>
         <p>You deserve a birthday that feels like a warm hug 💖</p>
