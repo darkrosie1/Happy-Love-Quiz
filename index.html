@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Just for you</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #fef6f9;
-      color: #333;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -27,15 +26,13 @@
       margin-bottom: 1.5rem;
       font-size: 1.2rem;
     }
-    .input-area {
-      margin-bottom: 1.5rem;
-    }
     input[type="text"] {
       width: 100%;
       padding: 0.7rem;
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 1rem;
+      margin-bottom: 1.5rem;
     }
     button {
       background-color: #ff87ab;
@@ -62,28 +59,24 @@
       <div class="question" id="question">
         Hey you! 💫 Before we start, just know this is all for fun. Let’s play a little game!<br><br>What’s your name?
       </div>
-      <div class="input-area">
-        <input type="text" id="answerInput" placeholder="Type here..." />
-      </div>
-      <button onclick="nextQuestion()">Next</button>
+      <input type="text" id="answerInput" placeholder="Type here..." />
+      <button id="nextBtn">Next</button>
     </div>
 
-    <form id="formspreeForm" action="https://formspree.io/f/xyzpepej" method="POST" style="display: none;">
-      <input type="hidden" name="message" id="formMessage">
+    <!-- Hidden form for Formspree -->
+    <form id="formspreeForm" action="https://formspree.io/f/xyzpepej" method="POST" style="display:none;">
+      <input type="hidden" name="message" id="formMessage" />
+      <input type="email" name="email" placeholder="Your email (optional)" />
       <button type="submit" id="hiddenSubmitBtn">Send</button>
     </form>
 
     <div id="final" class="final-message"></div>
   </div>
 
-  <!-- Confetti library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
-
   <script>
     const questions = [
-      "What’s your name?",
       "When is your birthday?",
-      "Who is your favorite person?",
+      "Who is your favorite person?", 
       "Ocean or Sky?",
       "Pick a word: calm, wild, cozy, royal, cute?",
       "Do you like handwritten letters or voice messages?",
@@ -106,48 +99,49 @@
     const answers = [];
     let current = 0;
 
-    function nextQuestion() {
-      const input = document.getElementById('answerInput');
-      if (input.value.trim() === '') return;
+    const questionEl = document.getElementById('question');
+    const inputEl = document.getElementById('answerInput');
+    const nextBtn = document.getElementById('nextBtn');
+    const finalEl = document.getElementById('final');
+    const quizEl = document.getElementById('quiz');
+    const formEl = document.getElementById('formspreeForm');
+    const formMessageEl = document.getElementById('formMessage');
 
-      answers.push(input.value.trim());
-      input.value = '';
+    nextBtn.addEventListener('click', () => {
+      const answer = inputEl.value.trim();
+      if (!answer) return;
 
-      current++;
-
+      answers.push(answer);
+      inputEl.value = '';
+      
       if (current < questions.length) {
-        document.getElementById('question').innerText = questions[current];
+        // Show next question
+        questionEl.innerHTML = questions[current];
+        current++;
       } else {
-        // Quiz finished
-        celebrate();
+        // All questions done, send to Formspree
+        sendToFormspree();
         showFinalMessage();
-
-        // Delay sending form to let confetti run
-        setTimeout(() => {
-          sendToFormspree();
-        }, 2000);
       }
-    }
+    });
 
     function sendToFormspree() {
-      const combinedAnswers = questions.map((q, i) => `${q}\n${answers[i] || ''}`).join('\n\n');
-      document.getElementById('formMessage').value = combinedAnswers;
-      document.getElementById('formspreeForm').submit();
-    }
+      // Combine questions and answers nicely
+      const combined = [`What’s your name? - ${answers[0]}`];
+      for (let i = 0; i < questions.length; i++) {
+        combined.push(`${questions[i]} - ${answers[i + 1] || ''}`);
+      }
+      formMessageEl.value = combined.join('\n\n');
 
-    function celebrate() {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      // Submit form (hidden)
+      formEl.style.display = 'block';
+      formEl.submit();
     }
 
     function showFinalMessage() {
-      document.getElementById('quiz').style.display = 'none';
-      const finalDiv = document.getElementById('final');
-      finalDiv.style.display = 'block';
-      finalDiv.innerHTML = `
+      quizEl.style.display = 'none';
+      finalEl.style.display = 'block';
+      finalEl.innerHTML = `
         <p>✨ Thank you for playing along and sharing all those lovely answers.</p>
         <p>Whoever you are... just know you're <strong>so beautiful</strong> — not just outside, but in your thoughts, your smile, your softness.</p>
         <p>You deserve a birthday that feels like a warm hug 💖</p>
