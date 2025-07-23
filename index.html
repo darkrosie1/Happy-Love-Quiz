@@ -87,26 +87,25 @@
     const questions = [
       "What’s your name?",
       "When is your birthday?",
-      "Who is your favorite person?", 
-      "Ocean or Sky?",
-      "Pick a word: calm, wild, cozy, royal, cute?" 
-      "Do you like handwritten letters or voice messages?",
+      "What's one thing you desperately want someone to gift you?",
+      "Who is your favorite person?",
+      "If you had to choose a birthday dress, what would it be?",
       "What flavor screams 'you' — Vanilla, Chocolate, Strawberry, or Coffee?",
       "What makes you feel truly seen?",
       "Do you feel you are beautiful?",
       "What's your favorite color?",
       "What's your favorite flower?",
-      "Do you prefer soft or dark aesthetic?" 
-      "What dessert makes you smile instantly?",
-      "What's your dream birthday moment?",
       "What kind of cake do you love?",
+      "Do you prefer soft or dark aesthetic?",
+      "What's your dream birthday moment?",
+      "Ocean or Sky?",
       "What kind of vibe do you want for your birthday party?",
-      "If you had to choose a birthday dress, what would it be?",
-       "What's one thing you desperately want someone to gift you?",
       "Do you like balloons, fairy lights, or candles more?",
       "What’s one song you’d want at your birthday?",
-            
-         ];
+      "Do you like handwritten letters or voice messages?",
+      "What dessert makes you smile instantly?",
+      "Pick a word: calm, wild, cozy, royal, cute?"
+    ];
 
     const answers = [];
     let current = 0;
@@ -131,14 +130,8 @@
       const combinedAnswers = questions.map((q, i) => `${q}\n${answers[i]}`).join('\n\n');
       document.getElementById('formMessage').value = combinedAnswers;
       document.getElementById('formspreeForm').submit();
-    } 
-    function celebrate() {
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 }
-  });
     }
+
     function showFinalMessage() {
       document.getElementById('quiz').style.display = 'none';
       document.getElementById('final').style.display = 'block';
