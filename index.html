@@ -130,8 +130,14 @@
       const combinedAnswers = questions.map((q, i) => `${q}\n${answers[i]}`).join('\n\n');
       document.getElementById('formMessage').value = combinedAnswers;
       document.getElementById('formspreeForm').submit();
+    } 
+    function celebrate() {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
     }
-
     function showFinalMessage() {
       document.getElementById('quiz').style.display = 'none';
       document.getElementById('final').style.display = 'block';
